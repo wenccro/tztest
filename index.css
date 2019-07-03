@@ -1,0 +1,107 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+ul>li {
+	list-style-type: none;
+}
+
+html,body {
+	width: 100%;
+	height: 100%;
+}
+
+#boxs {
+	width: 100%;
+	height: 500px;
+	position: relative;
+	width: 100%;
+	display: -webkit-flex;
+}
+
+.select {
+	width: 200px;
+	height: 100%;
+	overflow: auto;
+}
+
+#getbox{
+	height: 500px;
+	-webkit-flex: 2222;
+	border: 1px solid #f00;
+	position: relative;
+	overflow-y: hidden;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+
+#getbox>ul {
+	display:inline-block;
+	position: relative;
+	overflow: auto;
+	height: 100%;
+}
+
+#lineX {
+	width: 100%;
+	height: 1px;
+	background-color: #000;
+	position: absolute;
+	left: 0px;
+	top: 150px;
+	z-index: 5;
+}
+
+#getbox>ul>li {
+	text-align: center;
+	line-height: 50px;
+	background-color: #ddd;
+	z-index: 20;
+}
+
+/*主属性，横线上的元素*/
+.MainElements {
+	width: 150px;
+	height: 50px;
+	margin: 0 50px;
+	border: 1px solid #00FFFF;
+}
+/* 副线任务 */
+.ViceElement {
+	width: 100px;
+	height: 50px;
+	border: 1px solid #00FFFF;
+}
+
+/*操作框*/
+#operation {
+	width: 200px;
+	background-color: yellow;
+}
+/* 选择区域 */
+.select>li {
+	width: 100px;
+	height: 50px;
+	border: 1px solid #00FFFF;
+	margin: 25px 10px;
+	text-align: center;
+	line-height: 50px;
+	background-color: #ddd;
+	z-index: 20;
+}
+/* 拖拽元素 */
+#drags {
+	position: absolute;
+	top: -100px;
+	left: -100px;
+	width: 100px;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	border: 1px solid #00FFFF;
+	background-color: #ddd;
+	z-index: 20;
+}
+
+/* 处理ul里面的li */
+/* #getbox>ul */
