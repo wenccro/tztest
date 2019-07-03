@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>拖拽移动</title>
+		<style>
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+            html,body{
+                width: 100%;
+                height: 100%;
+            }
+			#boxs{
+				width: 100%;
+				height: 500px;
+				position: relative;
+                width: 100%;
+               display: -webkit-flex;
+            }
+			.select{
+				width: 200px;
+                height: 100%;
+                overflow: auto;
+			}
+
+            #getbox{
+                height: 500px;
+                -webkit-flex: 2222;
+                border: 1px solid #f00;
+                position: relative;
+                overflow: auto;
+            }
+            #getbox>ul{
+                position: relative;
+                overflow: auto;
+                height: 100%;
+            }
+            #lineX{
+                width: 100%;
+                height: 1px;
+                background-color: #000;
+                position: absolute;
+                left: 0px;
+                top: 150px;
+                z-index: 5;
+            }
+            #getbox>ul>li{
+                text-align: center;
+                line-height: 50px;
+            }
+            /*主属性，横线上的元素*/
+            .MainElements{
+                width: 150px;
+                height: 50px;
+                margin: 0 50px;
+                border: 1px solid #00FFFF;
+            }
+            .ViceElement{
+
+            }
+            /*操作框*/
+            #operation{
+                width: 200px;
+                background-color: #ddd;
+            }
+			ul>li{
+				list-style-type: none;
+			}
+			.select>li{
+				width: 100px;
+				height: 50px;
+				border: 1px solid #00FFFF;
+				margin: 25px 10px;
+				text-align: center;
+				line-height: 50px;
+                background-color: #ddd;
+                z-index: 20;
+			}
+
+			#drags{
+				position: absolute;
+				top: -100px;
+				left: -100px;
+				width: 100px;
+				height: 50px;
+				text-align: center;
+				line-height: 50px;
+				border: 1px solid #00FFFF;
+			}
+
+		</style>
+		<script type="text/javascript" src="js/jquery3.14.min.js"></script>
+	</head>
+	<body>
+		<div id="boxs">
+			<ul class="select">
+				<li>扫描二维码</li>
+				<li>标准步骤</li>
+                <li>图片步骤</li>
+                <li>产品</li>
+                <li>选择器</li>
+				<li>呼叫专家</li>
+				<li>完成</li>
+                <li>图片</li>
+                <li>视频</li>
+                <li>文字</li>
+                <li>PDF</li>
+                <li>输入文字</li>
+                <li>拍照记录</li>
+                <li>视频记录</li>
+                <li>状态输入</li>
+			</ul>
+            <!--拖拽显示区域-->
+			<div id="getbox">
+                <!--横线-->
+                <div id="lineX"></div>
+                <ul>
+                    <li></li>
+                    <li class="MainElements">标准步骤</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <!-- 操作工具-->
+            <div id="operation"></div>
+			<!--这个是临时替换，拖动时显示的-->
+			<div id="drags"></div>
+		</div>
+	</body>
+	<script>
+		window.onload = function(){
+		    //权重数据值,1表示是主线 2表示副线,小数点后面的数是权值，权值相同表示可以放同一个位置
+            var weightArr={
+                '扫描二维码':1.0,
+                '标准步骤':1.1,
+                '图片步骤':1.1,
+                '产品':1.1,
+                '选择器':1.1,
+                '呼叫专家':1.2,
+                '完成':1.3,
+                '图片':2.0,
+                '视频':2.0,
+                '文字':2.0,
+                'PDF':2.0,
+                '输入文字':2.1,
+                '拍照记录':2.2,
+                '视频记录':2.2,
+                '状态输入':2.3
+            }
+            //表示鼠标已按下
+            var flag = false , texts;
+            $(".select").delegate("li","mousedown",function(e){
+                flag = true;
+				texts = $(this).text();
+				var diffX =e.screenX- $(this).offset().left;
+				var diffY =e.clientY- $(this).offset().top;
+				$("#drags").text(texts);
+                //获取可释放元素区域,得到可拖动区域
+                var targetAreaLeft   = $("#getbox").offset().left;
+                var targetAreaTop    = $("#getbox").offset().top;
+                var targetAreaWidth  = $("#getbox").width()  - $(this).width()+targetAreaLeft;
+                var targetAreaHeight = $("#getbox").height() - $(this).height();
+
+				document.onmousemove =function(e){
+				    if(flag){
+                       var left = ($(window).scrollLeft())*1 + (e.screenX - diffX)*1;
+                       var top  = e.clientY - diffY;
+                       //计算是否在可拖动区域之内
+                        if(left <= targetAreaWidth && top <= targetAreaHeight && top >= targetAreaTop){
+                            $("#drags").offset({ top: top, left: left });
+                        }
+
+                    }
+				}
+				document.onmouseup = function(e){
+                    //释放时，去除左边移除框的内容
+                    if($("#drags").offset().left < targetAreaLeft){
+                        $("#drags").offset({ top: -100, left: -100 });
+                    }else{
+                        //将元素添加到目标区域中去,传入3个参数，左边位置，上位置，拖动元素内容
+                        targerAreaAddElement($("#drags").offset().left,$("#drags").offset().top,texts)
+                    }
+					this.onmousemove = null;
+					this.onmouseup = null;
+					flag = false;
+				}
+			});
+            //处理最终释放的位置，传入left和top值
+            function targerAreaAddElement(Left,Top,text) {
+                console.log(Left,Top,text)
+            }
+		}
+	</script>
+</html>
