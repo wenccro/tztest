@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>拖拽移动22</title>
-		<link  type="text/css" rel="stylesheet" href="index.css" />
+		<link  type="text/css" rel="stylesheet" href="css/index.css" />
 		<script type="text/javascript" src="js/jquery3.14.min.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 	</head>
@@ -30,27 +30,28 @@
 			<div id="getbox">
                 <!--横线-->
                 <div id="lineX"></div>
-                <ul>
-                    <li class="MainElements">扫描二维码</li>
-                    <li class="MainElements">标准步骤</li>
-                    <li class="MainElements">呼叫专家</li>
-                    <li class="MainElements">完成</li>
-                    <li class="ViceElement">图片</li>
-                    <li class="ViceElement">输入文字</li>
-                    <li class="ViceElement">拍照记录</li>
-                    <li class="ViceElement">状态输入</li>
+                <ul class="testsul">
+                    <li class="MainElements hiddenLi">扫描二维码</li>
+                    <li class="MainElements comshow">标准步骤</li>
+                    <li class="hiddenLi">呼叫专家</li>
+                    <li class="hiddenLi">完成</li>
+                    <li class="ViceElement hiddenLi"><p class="topP">图片</p></li>
+                    <li class="ViceElement hiddenLi"><p class="bottomP">输入文字</p></li>
+                    <li class="ViceElement hiddenLi"><p class="bottomP">拍照记录</p></li>
+                    <li class="ViceElement hiddenLi"><p class="bottomP">状态输入</p></li>
                 </ul>
-				<ul>
-				    <li class="MainElements">扫描二维码</li>
-				    <li class="MainElements">标准步骤</li>
-				    <li class="MainElements">呼叫专家</li>
-				    <li class="MainElements">完成</li>
-				    <li class="ViceElement">图片</li>
-				    <li class="ViceElement">输入文字</li>
-				    <li class="ViceElement">拍照记录</li>
-				    <li class="ViceElement">状态输入</li>
-				</ul>
-				
+
+<!--                <ul class="testsul">-->
+<!--                    <li class="MainElements">扫描二维码</li>-->
+<!--                    <li class="MainElements">标准步骤</li>-->
+<!--                    <li class="MainElements">呼叫专家</li>-->
+<!--                    <li class="MainElements">完成</li>-->
+<!--                    <li class="ViceElement"><p class="topP">图片</p></li>-->
+<!--                    <li class="ViceElement"><p class="bottomP">输入文字</p></li>-->
+<!--                    <li class="ViceElement"><p class="bottomP">拍照记录</p></li>-->
+<!--                    <li class="ViceElement"><p class="bottomP">状态输入</p></li>-->
+<!--                </ul>-->
+
             </div>
             <!-- 操作工具-->
             <div id="operation"></div>
