@@ -28,8 +28,13 @@ window.onload = function() {
 	var flag = false;//标记是否可以拖动
 	var	texts = '';//得到获取的值
 	var scoller = 0 ;//滚动条值;目的是计算出可是区域是什么位置
+	var mainWeight = [];//获得已添加的权值
+
+	//初始化区域
 	//获取div滚动条值移动值
 	resetLastUlWidth();//初始化先计算第一个ul的宽度
+
+
 	$('#getbox').on('scroll',function(e){
 		scoller = $(this)[0].scrollLeft;
 	});
@@ -83,49 +88,60 @@ window.onload = function() {
 		}
 	});
 	//处理最终释放的位置，传入left和top值
-	function targerAreaAddElement(Left, Top, text) {
-		var dragLeft = Left-200;//减200是因为  拖拽元素是基于整个页面的  需要减去选择区域的宽
-		var dragTop  = Top;
-		var dragText = text;
-		var weightNum =weightArr[text];//获取权重值
-		//后期需要修改
-		var ulwidth=$("#getbox>ul:last-child").width();
-		//通过comshow 标志位  拿到已经添加的权值
-		var oldUldata=$("#getbox>ul>li.comshow");
-		var mainwei = [];//获取显示值
-		for(var i=0; i< oldUldata.length;i++){
-			mainwei.push(weightArr[oldUldata[i].innerText])
-		}
-		console.log("移动值"+ mainwei)
-		console.log("拖拽left--"+dragLeft, "拖拽top--"+dragTop, "拖拽内容--"+dragText,"权值--"+weightNum,"ul宽度--"+ulwidth);
+		function targerAreaAddElement(Left, Top, text) {
+			var dragLeft = Left-200;//减200是因为  拖拽元素是基于整个页面的  需要减去选择区域的宽
+			var dragTop  = Top;
+			var dragText = text;
+			var weightNum =weightArr[text];//获取权重值
+			//后期需要修改
+			var ulwidth=$("#getbox>ul:last-child").width();
+			//通过comshow 标志位  拿到已经添加的权值
+			mainWeight = getWeight();//得到全职数组
+			console.log(mainWeight)
+			console.log("拖拽left--"+dragLeft, "拖拽top--"+dragTop, "拖拽内容--"+dragText,"权值--"+weightNum,"ul宽度--"+ulwidth);
 
-		//先判断他的目的是  1，在ul里，添加新东西，2在ul里，替换东西 3，重新创建一个ul
-		//当拖拽left值小于 ul宽度值是，表示添加或者替换
-		if(dragLeft <= ulwidth){
-			var rePlace = getLiPlace(weightNum,mainwei);
-			console.log(rePlace)
-			if(mainwei.indexOf(weightNum) != -1){//说明含有了，那就替换
-				$("#getbox>ul>li:eq("+rePlace+")").text(dragText);//替换上去
-			}else{//添加
-				//添加主线
-				$("#getbox>ul>li:eq("+rePlace+")").removeClass("hiddenLi");
-				$("#getbox>ul>li:eq("+rePlace+")").addClass("comshow");
+			//先判断他的目的是  1，在ul里，添加新东西，2在ul里，替换东西 3，重新创建一个ul
+			//当拖拽left值小于 ul宽度值是，表示添加或者替换
+			if(dragLeft <= ulwidth){
+				var rePlace = getLiPlace(weightNum,mainWeight);//获取可操作的具体li位置
+				console.log(rePlace)
+				if(mainWeight.indexOf(weightNum) != -1){//说明含有了，那就替换
+					if(weightNum <2){
+						$("#getbox>ul>li:eq("+rePlace+")").text(dragText);//替换上去
+					}else{
+						$("#getbox>ul>li:eq("+rePlace+")>p").text(dragText);
+					}
+
+				}else{//添加
+					//添加主线
+					$("#getbox>ul>li:eq("+rePlace+")").removeClass("hiddenLi");
+					$("#getbox>ul>li:eq("+rePlace+")").addClass("comshow");
+					if(weightNum < 2){
+						//对添加呼叫专家和完成做一个处理
+						if(rePlace == 2){
+							if(mainWeight.indexOf(1.2) != -1 && weightNum ==1.3){
+								rePlace=3;
+								$("#getbox>ul>li:eq("+rePlace+")").removeClass("hiddenLi");
+								$("#getbox>ul>li:eq("+rePlace+")").addClass("comshow");
+							}
+						}
+						$("#getbox>ul>li:eq("+rePlace+")").text(dragText);
+						$("#getbox>ul>li:eq("+rePlace+")").addClass("MainElements");
+						//更新ul范围区域
+						resetLastUlWidth();//初始化先计算第一个ul的宽度
+					}else{
+						$("#getbox>ul>li:eq("+rePlace+")>p").text(dragText);
+					}
+				}
+			}else{//创建一个新的ul,拖拽元素权值必须小于2才能
 				if(weightNum < 2){
-					$("#getbox>ul>li:eq("+rePlace+")").text(dragText);
-					$("#getbox>ul>li:eq("+rePlace+")").addClass("MainElements");
-				}else{
-					$("#getbox>ul>li:eq("+rePlace+")>p").text(dragText);;
+					//创建一个新的ul
 				}
 			}
-		}else{//创建一个新的ul,拖拽元素权值必须小于2才能
-			if(weightNum < 2){
-				//创建一个新的ul
-			}
+
+
+
 		}
-
-
-
-	}
 	//为最后一个元素计算 宽度
 	function resetLastUlWidth() {
 		//计算每一个ul的宽度
@@ -152,24 +168,18 @@ window.onload = function() {
 			case 2.3: result = 5;
 				break;
 		}
-		//对3，和6 做处理
-		if(result ==2){
-			result = arrs.indexOf(1.2) == -1 ? 2 : 3;
-		}
 		if(result == 5){
 			var nums =0;
 			console.log(arrs)
-			console.log(arrs.indexOf(2.1))
 			if(arrs.indexOf(2.1)!= -1){
 				nums++;
-			}else if(arrs.indexOf(2.2)!= -1){
-				nums++;
-			}else if(arrs.indexOf(2.3)!= -1){
-				nums++;
-			}else{
-				nums =0;
 			}
-			console.log("dddd"+nums)
+			if(arrs.indexOf(2.2)!= -1){
+				nums++;
+			}
+			if(arrs.indexOf(2.3)!= -1){
+				nums++;
+			}
 			if(nums ==0){
 				result=5;
 			}else if(nums ==1){
@@ -178,6 +188,16 @@ window.onload = function() {
 				result=7;
 			}
 
+		}
+		return result;
+	}
+	
+	//计算已添加权值返回 返回一个权值数组
+	function getWeight() {
+		var result=[];
+		var oldUldata=$("#getbox>ul>li.comshow");
+		for(var i=0; i< oldUldata.length;i++){
+			result.push(weightArr[oldUldata[i].innerText])
 		}
 		return result;
 	}
